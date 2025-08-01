@@ -33,13 +33,26 @@ const createUser =async (payload: Partial<iUser>)=>{
 
 }
 
-const getAllUser = async ()=>{}
+const getAllUser = async ()=>{
+
+    const allUser = await User.find();
+
+    const totalUser = await User.countDocuments() 
+
+    return {
+        user: allUser,
+        meta: {
+            total:  totalUser
+        }
+    }
+}
 
 const getSingleUser = async ()=>{
 
 }
 
-const updateUser = async ()=>{
+const updateUser = async (userId: string)=>{
+
 
 }
 

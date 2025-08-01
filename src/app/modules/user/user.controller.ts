@@ -20,6 +20,16 @@ const createUser = catchAsyncError (async( req: Request, res: Response)=>{
 
 const getAllUser = catchAsyncError (async( req: Request, res: Response)=>{
 
+    const users  = await userService.getAllUser() 
+
+    sendResponse(res,{
+        statusCode: httpStatus.CREATED,
+        success: true,
+        message:  "User retrived successfully",
+        data: users.user,
+        metaData: users.meta 
+})
+
    
 })
 
@@ -29,6 +39,7 @@ const getSingleUser = catchAsyncError (async( req: Request, res: Response)=>{
 })
 const updateUser =catchAsyncError (async( req: Request, res: Response)=>{
 
+    
    
 })
 
