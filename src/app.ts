@@ -4,16 +4,21 @@ import cors from "cors"
 import { globalError } from "./app/middlewares/globalErrorHandles";
 import { routeNotFound } from "./app/middlewares/routenotFound";
 import { router } from "./app/routers";
+import { envVars } from "./app/config/envVars";
 
 
 const app: Application = express();
 
-app.use(cors())
+
 
 app.use(cookieParser())
 app.use(express.json())
+app.use(express.urlencoded({extended: true}))
 
-
+app.use(cors({
+    origin: envVars.FRONTEND_URL,
+    credentials: true
+}))
 app.use("/api/v1", router)
 
 app.use ("/", (req,res)=>{

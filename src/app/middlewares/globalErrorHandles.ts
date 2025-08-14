@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 import { envVars } from "../config/envVars"
 import AppError from "../ErrorHelpers/AppError";
+import { cloudinaryDeleteUpload } from "../config/cloudinary.config";
 
 
 interface iError {
@@ -9,7 +10,7 @@ interface iError {
 }
 
 
-export const globalError = (err:any, req: Request, res: Response, next: NextFunction)=>{
+export const globalError = async(err:any, req: Request, res: Response, next: NextFunction)=>{
 
     let statuscode = 500;
     let message = ` something went wrong `;
@@ -21,6 +22,16 @@ export const globalError = (err:any, req: Request, res: Response, next: NextFunc
 ];
 
 
+if(req.file){
+    await cloudinaryDeleteUpload(req.file.path);
+ }
+
+ if(req.files && Array.isArray(req.files) && req.files.length > 0){
+
+    const allImages = (req.files as Express.Multer.File[])?.map(file => file.path)
+
+    await Promise.all(allImages.map(url => cloudinaryDeleteUpload(url)));
+ }
     
     if(err.code === 11000){
 

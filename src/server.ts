@@ -2,6 +2,7 @@ import {Server }from "http"
 import mongoose from "mongoose"
 import app from "./app";
 import { envVars } from "./app/config/envVars";
+import { superAdmin } from "./app/seed/seed";
 
 
 let server: Server
@@ -22,5 +23,8 @@ async function main() {
     }
 }
 
-
-main()
+(async()=>{
+  
+   await main()
+   await superAdmin()
+})()

@@ -18,8 +18,10 @@ export interface iUser {
     name: string;
     email: string;
     password?: string
-    phone?: string
-    isBlocked?: boolean
+    phone?: string,
+    profile?:string
+    isBlocked?: boolean,
+    isVerified?:boolean
     role: Role,
     auths: iAuths[]
     

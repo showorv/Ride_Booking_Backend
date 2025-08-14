@@ -16,7 +16,14 @@ const userSchema = new Schema<iUser> ( {
         type: String,
     },
     phone: {type: String},
+    profile: {
+        type: String
+    },
     isBlocked: {
+        type: Boolean,
+        default: false
+    },
+    isVerified: {
         type: Boolean,
         default: false
     },
