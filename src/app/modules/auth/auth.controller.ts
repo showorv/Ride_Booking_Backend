@@ -69,14 +69,14 @@ const logout = catchAsyncError(async(req: Request, res: Response)=>{
     
 })
 
-const resetPassword = catchAsyncError(async(req: Request, res: Response)=>{
+const changePassword = catchAsyncError(async(req: Request, res: Response)=>{
 
     const oldPassword = req.body.oldPassword
     const newPassword = req.body.newPassword
 
     const decodedToken =  req.user
 
-    await authService.resetPassword(oldPassword, newPassword, decodedToken as JwtPayload)
+    await authService.changePassword(oldPassword, newPassword, decodedToken as JwtPayload)
 
 
     res.status(httpStatus.OK).json({
@@ -86,4 +86,34 @@ const resetPassword = catchAsyncError(async(req: Request, res: Response)=>{
     })
     
 })
-export const authController = {login,getNewAccessToken,logout,resetPassword}
+const forgotPassword = catchAsyncError(async(req: Request, res: Response)=>{
+
+
+    
+    const {email} = req.body
+
+    await authService.forgotPassword( email)
+
+
+    res.status(httpStatus.OK).json({
+        success: true,
+        message: "reset password link sent successfully",
+        data: null
+    })
+    
+})
+const resetPassword = catchAsyncError(async(req: Request, res: Response)=>{
+
+    const decodedToken =  req.user
+
+    await authService.resetPassword(req.body, decodedToken as JwtPayload)
+
+
+    res.status(httpStatus.OK).json({
+        success: true,
+        message: "password reset successfully",
+        data: null
+    })
+    
+})
+export const authController = {login,getNewAccessToken,logout,resetPassword,changePassword,forgotPassword}

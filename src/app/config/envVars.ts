@@ -20,6 +20,14 @@ export const envVars = {
         CLOUDINARY_CLOUD_NAME:process.env.CLOUDINARY_CLOUD_NAME,
         CLOUDINARY_API_SECRET:process.env.CLOUDINARY_API_SECRET,
         CLOUDINARY_API_KEY:process.env.CLOUDINARY_API_KEY
-    }
+    },
+
+    NODEMAILER:{
+        SMTP_HOST:process.env.SMTP_HOST,
+        SMTP_PORT:process.env.SMTP_PORT,
+        SMTP_PASS:process.env.SMTP_PASS,
+        SMTP_USER:process.env.SMTP_USER,
+        SMTP_FROM:process.env.SMTP_FROM
+    },
 }
 
