@@ -73,9 +73,7 @@ const cancleRide = async(rideId: string, decodedToken: JwtPayload)=>{
         { 
         status: rideStatus.CANCLED, 
         isCancelledByRider: true, 
-        timeStamps: {
-            cancledAt: new Date()
-        }
+        "timeStamps.cancledAt": new Date()
         }, 
         {new: true, runValidators: true})
 

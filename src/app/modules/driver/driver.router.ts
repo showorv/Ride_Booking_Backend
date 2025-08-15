@@ -15,6 +15,18 @@ multerUpload.array("files"),
 validateSchma(createDriverValidationSchema),
 driverController.createDriver)
 
+router.get("/drivers", 
+checkAuth(Role.ADMIN, Role.SUPERADMIN),
+driverController.allDriver)
+
+
+router.post("/approve/:driverId", 
+checkAuth(Role.ADMIN, Role.SUPERADMIN),
+driverController.approvedDriver)
+router.post("/suspense/:driverId", 
+checkAuth(Role.ADMIN, Role.SUPERADMIN),
+driverController.suspenseDriver)
+
 router.post("/accepted/:rideId", checkAuth(Role.DRIVER), driverController.acceptedRide)
 
 

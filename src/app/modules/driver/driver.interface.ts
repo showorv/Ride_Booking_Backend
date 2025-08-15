@@ -1,19 +1,23 @@
 import { Types } from "mongoose";
 
-export enum availableStatus{
+export enum activeStatus{
     ONLINE="ONLINE",
     OFFLINE="OFFLINE"
 }
+
 
 export interface iDriver {
 
     user: Types.ObjectId
     vehicleNumber: string
     license: string[]
-    isAvailable?:availableStatus
+    isAvailable?:boolean
     isApproved?:boolean
+    isSuspend?:boolean
     totalEarning?:number
     currentRide?:Types.ObjectId
+    onlineStatus?: activeStatus
+
 
 
 }

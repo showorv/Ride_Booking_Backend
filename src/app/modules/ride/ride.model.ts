@@ -12,6 +12,7 @@ const rideSchema =new Schema<iRide>({
     driver: {
         type: mongoose.Schema.ObjectId,
         ref: "Driver",
+        default: null
        
     },
     status: {

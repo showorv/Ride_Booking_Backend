@@ -8,32 +8,51 @@ import { JwtPayload } from "jsonwebtoken";
 
 // for admin
 
-const allDriver= catchAsyncError(async(req: Request, res: Response)=>{
-
-
-     
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "single user get successfully",
-        data: ""
-       
-    })
-})
-
 const approvedDriver= catchAsyncError(async(req: Request, res: Response)=>{
 
+    const  driverId = req.params.driverId
+
+
+    const driver = await driverService.approvedDriver(driverId, req.body)
 
      
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "single user get successfully",
-        data: ""
+        message: "driver approved successfully",
+        data:driver
+       
+    })
+})
+const suspenseDriver= catchAsyncError(async(req: Request, res: Response)=>{
+
+    const  driverId = req.params.driverId
+
+
+    const driver = await driverService.suspenseDriver(driverId, req.body)
+
+     
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "driver suspend successfully",
+        data:driver
        
     })
 })
 
+const allDriver= catchAsyncError(async(req: Request, res: Response)=>{
+
+    const drivers = await driverService.allDriver()
+     
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "drivers retrived successfully",
+        data: drivers
+       
+    })
+})
 const createDriver = catchAsyncError(async(req: Request, res: Response)=>{
 
         const payload: iDriver = {
@@ -56,13 +75,17 @@ const createDriver = catchAsyncError(async(req: Request, res: Response)=>{
 
 const acceptedRide = catchAsyncError(async(req: Request, res: Response)=>{
 
+    const rideId = req.params.rideId
 
+    const decodedToken = req.user
+
+    const ride = await driverService.acceptedRide(rideId, decodedToken as JwtPayload)
      
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "single user get successfully",
-        data: ""
+        message: "accept ride successfully",
+        data: ride
        
     })
 })
@@ -91,6 +114,18 @@ const updateRideStatus= catchAsyncError(async(req: Request, res: Response)=>{
        
     })
 })
+const getAvaiblableRidesForDriver= catchAsyncError(async(req: Request, res: Response)=>{
+
+
+     
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "single user get successfully",
+        data: ""
+       
+    })
+})
 const viewEarnignHistory= catchAsyncError(async(req: Request, res: Response)=>{
 
 
@@ -108,4 +143,4 @@ const viewEarnignHistory= catchAsyncError(async(req: Request, res: Response)=>{
 
 
 
-export const driverController = {createDriver,acceptedRide, setAvailablity,updateRideStatus,viewEarnignHistory,allDriver,approvedDriver}
+export const driverController = {createDriver,acceptedRide, setAvailablity,updateRideStatus,viewEarnignHistory,allDriver,approvedDriver,suspenseDriver,getAvaiblableRidesForDriver}
