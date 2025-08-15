@@ -19,6 +19,14 @@ router.get("/drivers",
 checkAuth(Role.ADMIN, Role.SUPERADMIN),
 driverController.allDriver)
 
+router.post("/update-online-status", 
+checkAuth(Role.DRIVER),
+driverController.setOnlineStatus)
+
+router.get("/requested-ride", 
+checkAuth(Role.DRIVER),
+driverController.getAvaiblableRidesForDriver)
+
 
 router.post("/approve/:driverId", 
 checkAuth(Role.ADMIN, Role.SUPERADMIN),
@@ -28,6 +36,8 @@ checkAuth(Role.ADMIN, Role.SUPERADMIN),
 driverController.suspenseDriver)
 
 router.post("/accepted/:rideId", checkAuth(Role.DRIVER), driverController.acceptedRide)
+router.post("/cancled/:rideId", checkAuth(Role.DRIVER), driverController.cancledRideByDriver)
+router.post("/updateStatus/:rideId", checkAuth(Role.DRIVER), driverController.updateRideStatus)
 
 
 

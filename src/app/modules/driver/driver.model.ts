@@ -12,6 +12,7 @@ const driverSchema = new Schema<iDriver>({
     currentRide: {
         type: mongoose.Schema.ObjectId,
         ref:"Ride",
+        default: null
        
     },
     vehicleNumber: {

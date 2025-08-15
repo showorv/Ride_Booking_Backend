@@ -90,39 +90,65 @@ const acceptedRide = catchAsyncError(async(req: Request, res: Response)=>{
     })
 })
 
-const setAvailablity = catchAsyncError(async(req: Request, res: Response)=>{
+const cancledRideByDriver = catchAsyncError(async(req: Request, res: Response)=>{
 
+    const rideId = req.params.rideId
 
+    const decodedToken = req.user
+
+    const ride = await driverService.cancledRideByDriver(rideId, decodedToken as JwtPayload)
      
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "single user get successfully",
-        data: ""
+        message: "cancle the  ride successfully",
+        data: ride
+       
+    })
+})
+
+const setOnlineStatus = catchAsyncError(async(req: Request, res: Response)=>{
+
+    const decodedToken = req.user
+    
+
+    const updateOnlineStatus = await driverService.setOnlineStatus(req.body, decodedToken as JwtPayload)
+     
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "set online status successfully",
+        data: updateOnlineStatus
        
     })
 })
 const updateRideStatus= catchAsyncError(async(req: Request, res: Response)=>{
 
+    const decodedToken = req.user
 
+    const rideId = req.params.rideId
+
+    const status = await driverService.updateRideStatus(rideId,req.body,decodedToken as JwtPayload)
      
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "single user get successfully",
-        data: ""
+        message: "ride status updated successfully",
+        data:status
        
     })
 })
 const getAvaiblableRidesForDriver= catchAsyncError(async(req: Request, res: Response)=>{
+     const decodedToken = req.user
 
+     const availableRequest = await driverService.getAvaiblableRidesForDriver(decodedToken as JwtPayload)
 
      
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "single user get successfully",
-        data: ""
+        message: "requested ride get successfully",
+        data: availableRequest
        
     })
 })
@@ -143,4 +169,4 @@ const viewEarnignHistory= catchAsyncError(async(req: Request, res: Response)=>{
 
 
 
-export const driverController = {createDriver,acceptedRide, setAvailablity,updateRideStatus,viewEarnignHistory,allDriver,approvedDriver,suspenseDriver,getAvaiblableRidesForDriver}
+export const driverController = {createDriver,acceptedRide, cancledRideByDriver,setOnlineStatus,updateRideStatus,viewEarnignHistory,allDriver,approvedDriver,suspenseDriver,getAvaiblableRidesForDriver}

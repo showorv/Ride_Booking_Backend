@@ -5,7 +5,7 @@ import AppError from "../../ErrorHelpers/AppError"
 import { Driver } from "./driver.model"
 import { Role } from "../user/user.interface"
 import { Ride } from "../ride/ride.model"
-import { rideStatus } from "../ride/ride.interface"
+import { iRide, rideStatus } from "../ride/ride.interface"
 
 
 const createDriver = async(payload: iDriver, decodedToken:JwtPayload)=>{
@@ -183,11 +183,15 @@ const cancledRideByDriver = async(rideId: string, decodedToken: JwtPayload)=>{
         throw new AppError(401,"you cannot cancle this ride. ")
     }
 
-   const canledRideByDriver = await Ride.findByIdAndUpdate(
+    if (ride.status !== rideStatus.ACCEPTED) {
+        throw new AppError(401, "Cannot cancel after ride in_transit or completed");
+    }
+
+   const cancledRideByDriver = await Ride.findByIdAndUpdate(
         rideId,
         { driver : null, 
-          status: rideStatus.ACCEPTED,
-         "timeStamps.acceptedAt": new Date()
+          status: rideStatus.REQUESTED,
+         $unset: { "timeStamps.acceptedAt": ""}
         },
         {
             new:true,
@@ -195,22 +199,121 @@ const cancledRideByDriver = async(rideId: string, decodedToken: JwtPayload)=>{
         }
         )
 
-        if(!canledRideByDriver){
-            throw new AppError(401,"ride not accepted or already others accept it")
+        if(!cancledRideByDriver){
+            throw new AppError(401,"ride not cancled")
         }
 
-     await Driver.findByIdAndUpdate(driver._id, {isAvailable: false, currentRide: rideId})
+     await Driver.findByIdAndUpdate(driver._id, {isAvailable: true, currentRide: null})
 
-     return canledRideByDriver
-}
-const setAvailablity = async()=>{
-
-}
-const updateRideStatus = async()=>{
-
+     return cancledRideByDriver
 }
 
-const getAvaiblableRidesForDriver = async() =>{
+
+const setOnlineStatus = async(payload: iDriver, decodedToken: JwtPayload)=>{
+
+   
+
+    const driver = await Driver.findOne({user: decodedToken.userId})
+
+    if(!driver){
+        throw new AppError(401,"driver not found")
+    }
+
+ 
+
+    if(driver.isSuspend || !driver.isApproved || driver.currentRide!== null){
+        throw new AppError(401,"you cannot change now")
+    }
+
+  
+    //   console.log(payload)
+
+    const updateOnlineStatus = await Driver.findByIdAndUpdate( driver._id, {onlineStatus: payload.onlineStatus}, {new: true, runValidators: true})
+
+    return updateOnlineStatus
+
+
+
+}
+
+
+const updateRideStatus = async(rideId: string,payload: iRide, decodedToken: JwtPayload)=>{
+
+    const user = await User.findById(decodedToken.userId)
+
+    if(!user){
+        throw new AppError(401,"user not found")
+    }
+
+    if(user.role !== Role.DRIVER){
+        throw new AppError(401,"you cannot change it")
+    }
+
+    const driver = await Driver.findOne({user: user._id})
+
+    if(!driver){
+        throw new AppError(401,"driver not found")
+    }
+
+
+    if(driver.currentRide === null ){
+        throw new AppError(401,"you have no ride to change ride status")
+    }
+
+    const ride = await Ride.findById(rideId)
+
+    if(!ride){
+        throw new AppError(401,"ride not found")
+    }
+
+    
+
+    if (![
+        rideStatus.PICKED_UP, 
+        rideStatus.IN_TRANSIT, 
+        rideStatus.COMPLETED
+    ].includes(payload.status as rideStatus)) {
+        throw new AppError(400, "Invalid ride status value");
+    }
+
+
+    let timeStampField = "";
+
+    if(payload.status===rideStatus.PICKED_UP) {
+       timeStampField = "timeStamps.pickedUpAt"
+    }
+    if(payload.status===rideStatus.IN_TRANSIT){
+      timeStampField = "timeStamps.inTransitAt"
+    } 
+    if(payload.status===rideStatus.COMPLETED){
+    timeStampField = "timeStamps.completedAt"
+    }
+
+    const update: any = { status: payload.status };
+    if(timeStampField){
+      update[timeStampField] = new Date();
+    } 
+
+    const updatedRide = await Ride.findByIdAndUpdate(rideId, update, { new: true, runValidators: true });
+
+    return updatedRide;
+
+
+
+
+}
+
+const getAvaiblableRidesForDriver = async(decodedToken: JwtPayload) =>{
+
+    const driver = await Driver.findOne({user: decodedToken.userId})
+
+    if(!driver){
+        throw new AppError(400, "cannot see this route");
+    }
+
+    const availableRequest = await Ride.find({status: rideStatus.REQUESTED}).select("pickupLocation dropLocation isCancelledByRider createdAt").sort({createdAt: -1})
+
+    return availableRequest
 
 }
 const viewEarnignHistory = async()=>{
@@ -218,4 +321,4 @@ const viewEarnignHistory = async()=>{
 }
 
 
-export const driverService = {createDriver,acceptedRide, setAvailablity,updateRideStatus,viewEarnignHistory,allDriver,approvedDriver,suspenseDriver,getAvaiblableRidesForDriver,cancledRideByDriver}
+export const driverService = {createDriver,acceptedRide, setOnlineStatus,updateRideStatus,viewEarnignHistory,allDriver,approvedDriver,suspenseDriver,getAvaiblableRidesForDriver,cancledRideByDriver}

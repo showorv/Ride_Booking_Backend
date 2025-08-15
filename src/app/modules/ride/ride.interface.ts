@@ -6,7 +6,7 @@ export enum rideStatus {
     PICKED_UP="PICKED_UP",
     IN_TRANSIT="IN_TRANSIT",
     COMPLETED="COMPLETED",
-    CANCLED="CANCLED"
+    CANCELED="CANCELED"
 
 }
 
@@ -33,7 +33,8 @@ export interface iRide{
         acceptedAt:Date
         completedAt:Date
         pickedupAt:Date,
-        cancledAt: Date
+        inTransitAt: Date
+        canceledAt: Date
     }
 
 
