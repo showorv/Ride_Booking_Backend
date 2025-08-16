@@ -27,6 +27,14 @@ router.get("/requested-ride",
 checkAuth(Role.DRIVER),
 driverController.getAvaiblableRidesForDriver)
 
+router.get("/driver-ride-history", 
+checkAuth(Role.DRIVER),
+driverController.driverRideHistory)
+
+router.get("/driver-earning-history", 
+checkAuth(Role.DRIVER),
+driverController.viewEarnignHistory)
+
 
 router.post("/approve/:driverId", 
 checkAuth(Role.ADMIN, Role.SUPERADMIN),

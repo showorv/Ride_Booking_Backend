@@ -34,6 +34,12 @@ const rideSchema =new Schema<iRide>({
         type: Boolean,
         default: false
     },
+
+    fare: {
+        type: Number,
+        required: true
+    },
+    
     timeStamps: {
         requestedAt: { type: Date },
         acceptedAt: { type: Date },

@@ -154,13 +154,32 @@ const getAvaiblableRidesForDriver= catchAsyncError(async(req: Request, res: Resp
 })
 const viewEarnignHistory= catchAsyncError(async(req: Request, res: Response)=>{
 
+    const decodedToken = req.user
+
+    const earningHistory = await driverService.viewEarnignHistory(decodedToken as JwtPayload)
 
      
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "single user get successfully",
-        data: ""
+        message: "earning history retrived successfully",
+        data: earningHistory
+       
+    })
+})
+
+const driverRideHistory= catchAsyncError(async(req: Request, res: Response)=>{
+
+    const decodedToken = req.user
+
+    const driverRide = await driverService.driverRideHistory(decodedToken as JwtPayload)
+
+     
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "driver ride history retrived successfully",
+        data: driverRide
        
     })
 })
@@ -169,4 +188,6 @@ const viewEarnignHistory= catchAsyncError(async(req: Request, res: Response)=>{
 
 
 
-export const driverController = {createDriver,acceptedRide, cancledRideByDriver,setOnlineStatus,updateRideStatus,viewEarnignHistory,allDriver,approvedDriver,suspenseDriver,getAvaiblableRidesForDriver}
+
+
+export const driverController = {createDriver,acceptedRide, cancledRideByDriver,setOnlineStatus,updateRideStatus,viewEarnignHistory,allDriver,approvedDriver,suspenseDriver,getAvaiblableRidesForDriver,driverRideHistory}

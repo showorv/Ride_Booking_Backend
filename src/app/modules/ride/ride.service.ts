@@ -18,7 +18,7 @@ const rideRequest = async(payload: iRide, decodedToken: JwtPayload)=>{
         throw new AppError(401,"only rider can request for a ride")
     }
 
-    const {pickupLocation,dropLocation} = payload
+    const {pickupLocation,dropLocation,fare} = payload
 
     const existingRide = await Ride.findOne({
         rider: rider._id,
@@ -33,6 +33,7 @@ const rideRequest = async(payload: iRide, decodedToken: JwtPayload)=>{
         rider: rider._id,
         pickupLocation,
         dropLocation,
+        fare,
         status: rideStatus.REQUESTED,
         timeStamps: {
             requestedAt: new Date()

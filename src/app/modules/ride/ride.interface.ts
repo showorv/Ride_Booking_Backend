@@ -28,6 +28,7 @@ export interface iRide{
     }
 
     status?:rideStatus
+    fare: number
     timeStamps: {
         requestedAt:Date
         acceptedAt:Date
