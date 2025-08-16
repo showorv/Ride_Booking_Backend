@@ -1,5 +1,5 @@
 import cookieParser from "cookie-parser";
-import express, { Application } from "express"
+import express, { Application, Request, Response } from "express"
 import cors from "cors"
 import { globalError } from "./app/middlewares/globalErrorHandles";
 import { routeNotFound } from "./app/middlewares/routenotFound";
@@ -21,9 +21,10 @@ app.use(cors({
 }))
 app.use("/api/v1", router)
 
-app.use ("/", (req,res)=>{
-    
-    res.send("server on");
+app.get("/",(req: Request,res: Response)=>{
+    res.status(200).json({
+        message: "Welcome to ride booking api"
+    })
 })
 
 app.use(globalError)

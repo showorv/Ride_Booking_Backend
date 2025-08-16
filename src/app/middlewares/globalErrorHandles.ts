@@ -14,7 +14,7 @@ export const globalError = async(err:any, req: Request, res: Response, next: Nex
 
     let statuscode = 500;
     let message = ` something went wrong `;
-    let errorSources: iError[] = [
+    const errorSources: iError[] = [
     //     {
     //     path: "",
     //     message: ""
