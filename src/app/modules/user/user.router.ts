@@ -14,7 +14,7 @@ multerUpload.single("file"),
 validateSchma(createUserValidation),
  userController.createUser);
 router.get ("/",
-// checkAuth(Role.ADMIN, Role.SUPERADMIN), 
+checkAuth(Role.ADMIN, Role.SUPERADMIN), 
 userController.getAllUser);
 router.get("/me", checkAuth(...Object.values(Role)), userController.getMe)
 router.get("/:userId", checkAuth(Role.ADMIN,Role.SUPERADMIN),userController.getSingleUser)
