@@ -12,6 +12,8 @@ const login = catchAsyncError(async(req: Request, res: Response)=>{
     
     const user = await authService.login(req.body)
 
+
+
     setCookies(res, user);
 
     sendResponse(res,{

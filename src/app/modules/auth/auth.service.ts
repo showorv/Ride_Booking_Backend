@@ -20,6 +20,9 @@ const login = async (payload: iUser)=>{
     if(!userExist){
         throw new AppError (httpStatus.NOT_FOUND, "email not correct")
     }
+    if(!userExist.isVerified){
+        throw new AppError (httpStatus.NOT_FOUND, "you are not verified")
+    }
 
     const isPasswordMatch = await bcrypt.compare(password as string, userExist.password as string)
 
@@ -106,6 +109,7 @@ const forgotPassword =async (email: string)=>{
          if(!userExist.isVerified){
          throw new AppError(httpStatus.BAD_REQUEST, "user is not verified")
          }
+        
          
          const JwtPayload = {
              userId: userExist._id,
