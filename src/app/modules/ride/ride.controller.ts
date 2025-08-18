@@ -43,7 +43,10 @@ const getAllRide = catchAsyncError(async(req: Request, res: Response)=>{
         statusCode: httpStatus.OK,
         success: true,
         message: "all ride retrived successfully",
-        data: allRide
+        data: allRide.data,
+        metaData: {
+            total: allRide.meta
+        }
        
     })
 })
@@ -78,4 +81,10 @@ const rideHistory = catchAsyncError(async(req: Request, res: Response)=>{
 
 
 
-export const rideController = {rideRequest, cancleRide, getAllRide, rideHistory}
+export const rideController =
+{
+    rideRequest,
+     cancleRide, 
+     getAllRide, 
+     rideHistory
+}

@@ -92,8 +92,14 @@ const suspenseDriver = async(driverId: string, payload: Partial<iDriver>)=>{
 }
 const allDriver = async()=>{
 
+    const total = await Driver.countDocuments()
+
     const drivers = await Driver.find();
-    return drivers
+    return  {
+        
+        data: drivers,
+        meta: total
+    }
 }
 
 
@@ -377,4 +383,17 @@ const driverRideHistory = async(decodedToken: JwtPayload)=>{
 
 }
 
-export const driverService = {createDriver,acceptedRide, setOnlineStatus,updateRideStatus,viewEarnignHistory,allDriver,approvedDriver,suspenseDriver,getAvaiblableRidesForDriver,cancledRideByDriver,driverRideHistory}
+export const driverService =
+ {
+    createDriver,
+    acceptedRide, 
+    setOnlineStatus,
+    updateRideStatus,
+    viewEarnignHistory,
+    allDriver,
+    approvedDriver,
+    suspenseDriver,
+    getAvaiblableRidesForDriver,
+    cancledRideByDriver,
+    driverRideHistory
+}

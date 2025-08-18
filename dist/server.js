@@ -37,3 +37,39 @@ function main() {
     yield main();
     yield (0, seed_1.superAdmin)();
 }))();
+process.on("unhandledRejection", (err) => {
+    console.log("unhandle rejection detected... server shutting down..", err);
+    if (server) {
+        server.close(() => {
+            process.exit(1);
+        });
+    }
+    process.exit(1);
+});
+process.on("uncaughtException", (err) => {
+    console.log("uncaught exception detected... server shutting down..", err);
+    if (server) {
+        server.close(() => {
+            process.exit(1);
+        });
+    }
+    process.exit(1);
+});
+process.on("SIGTERM", () => {
+    console.log("sigterm signal recived... server shutting down..");
+    if (server) {
+        server.close(() => {
+            process.exit(1);
+        });
+    }
+    process.exit(1);
+});
+process.on("SIGINT", () => {
+    console.log("sigintsignal recived... server shutting down..");
+    if (server) {
+        server.close(() => {
+            process.exit(1);
+        });
+    }
+    process.exit(1);
+});

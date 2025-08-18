@@ -120,4 +120,11 @@ const getMe = async(userId: string)=>{
 
 
 
-export const userService = {createUser,getAllUser,getSingleUser,updateUser,getMe}
+export const userService = 
+{
+    createUser,
+    getAllUser,
+    getSingleUser,
+    updateUser,
+    getMe
+}

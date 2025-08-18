@@ -95,4 +95,11 @@ const getMe = catchAsyncError(async(req: Request,res: Response)=>{
 })
 
 
-export const userController = {createUser,getAllUser, getSingleUser,updateUser,getMe}
+export const userController = 
+{
+    createUser,
+    getAllUser, 
+    getSingleUser,
+    updateUser,
+    getMe
+}

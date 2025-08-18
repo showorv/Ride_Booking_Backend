@@ -86,9 +86,13 @@ const cancleRide = async(rideId: string, decodedToken: JwtPayload)=>{
 }
 const getAllRide = async()=>{
 
+    const total = await Ride.countDocuments()
     const allRide = await Ride.find()
 
-    return allRide
+    return {
+        data: allRide,
+        meta: total
+    }
 }
 const rideHistory = async(decodedToken: JwtPayload)=>{
 
@@ -109,4 +113,10 @@ const rideHistory = async(decodedToken: JwtPayload)=>{
 
 
 
-export const rideService = {rideRequest, cancleRide, getAllRide, rideHistory}
+export const rideService = 
+{
+    rideRequest,
+     cancleRide, 
+     getAllRide, 
+     rideHistory
+}

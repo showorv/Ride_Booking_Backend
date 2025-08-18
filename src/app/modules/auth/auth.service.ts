@@ -159,4 +159,11 @@ const resetPassword =async (payload: Record<string,any>, decodedToken: JwtPayloa
 
 }
 
-export const authService = {login, generateNewAccessToken,resetPassword,changePassword,forgotPassword}
+export const authService = 
+{
+    login, 
+    generateNewAccessToken,
+    resetPassword,
+    changePassword,
+    forgotPassword
+}

@@ -49,7 +49,10 @@ const allDriver= catchAsyncError(async(req: Request, res: Response)=>{
         statusCode: httpStatus.OK,
         success: true,
         message: "drivers retrived successfully",
-        data: drivers
+        data: drivers.data,
+        metaData:{
+            total: drivers.meta
+        }
        
     })
 })
@@ -190,4 +193,17 @@ const driverRideHistory= catchAsyncError(async(req: Request, res: Response)=>{
 
 
 
-export const driverController = {createDriver,acceptedRide, cancledRideByDriver,setOnlineStatus,updateRideStatus,viewEarnignHistory,allDriver,approvedDriver,suspenseDriver,getAvaiblableRidesForDriver,driverRideHistory}
+export const driverController = 
+{
+    createDriver,
+    acceptedRide, 
+    setOnlineStatus,
+    updateRideStatus,
+    viewEarnignHistory,
+    allDriver,
+    approvedDriver,
+    suspenseDriver,
+    getAvaiblableRidesForDriver,
+    cancledRideByDriver,
+    driverRideHistory
+}

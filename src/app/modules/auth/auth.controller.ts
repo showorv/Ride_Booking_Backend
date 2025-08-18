@@ -118,4 +118,11 @@ const resetPassword = catchAsyncError(async(req: Request, res: Response)=>{
     })
     
 })
-export const authController = {login,getNewAccessToken,logout,resetPassword,changePassword,forgotPassword}
+export const authController =
+{
+    login, 
+    getNewAccessToken,
+    resetPassword,
+    changePassword,
+    forgotPassword
+}
