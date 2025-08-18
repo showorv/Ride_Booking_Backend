@@ -121,6 +121,7 @@ const resetPassword = catchAsyncError(async(req: Request, res: Response)=>{
 export const authController =
 {
     login, 
+    logout,
     getNewAccessToken,
     resetPassword,
     changePassword,
