@@ -63,11 +63,14 @@ const cancleRide = async(rideId: string, decodedToken: JwtPayload)=>{
     if(ride.rider.toString() !== rider._id.toString()){
         throw new AppError(401,"you are not authorized")
     }
+    
 
+  
     if(ride.status !== rideStatus.REQUESTED){
         throw new AppError(401,"you can only cancle ride before accepted or cancle ride cannot cancle")
     }
 
+   
  
 
     const cancleStatus = await Ride.findByIdAndUpdate(rideId,
