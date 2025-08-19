@@ -122,6 +122,7 @@ const forgotPassword =async (email: string)=>{
          })
  
          const forgotUILink = `${envVars.FRONTEND_URL}/reset-password?id=${userExist._id}&token=${resetToken}`
+    
  
          sendEmail({
              to: userExist.email,
@@ -132,6 +133,8 @@ const forgotPassword =async (email: string)=>{
                  reseturl: forgotUILink,
              }
          })
+
+         
          
  
  }

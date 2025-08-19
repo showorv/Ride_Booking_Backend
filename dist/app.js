@@ -13,6 +13,7 @@ const envVars_1 = require("./app/config/envVars");
 const app = (0, express_1.default)();
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
+app.set("trust proxy", 1);
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cors_1.default)({
     origin: envVars_1.envVars.FRONTEND_URL,

@@ -8,13 +8,16 @@ import AppError from "../ErrorHelpers/AppError"
 
 
 const transporter = nodemailer.createTransport({
-    secure: true,
+    secure: false,
     auth: {
         user: envVars.NODEMAILER.SMTP_USER,
         pass: envVars.NODEMAILER.SMTP_PASS
     },
-    host: envVars.NODEMAILER.SMTP_HOST ,
     port: Number(envVars.NODEMAILER.SMTP_PORT),
+    host: envVars.NODEMAILER.SMTP_HOST ,
+   
+    tls: { rejectUnauthorized: false }
+    
 
 })
 
@@ -35,7 +38,7 @@ export const sendEmail = async ({to, subject,templateName,templateData,attachmen
         const templatePath = path.join(__dirname, `templates/${templateName}.ejs`)
         const html = await ejs.renderFile(templatePath, templateData)
         const info = await transporter.sendMail({
-            from: envVars.NODEMAILER.SMTP_FROM,
+            from: envVars.NODEMAILER.SMTP_FROM || envVars.NODEMAILER.SMTP_USER,
             to: to,
             subject: subject,
             html: html,
@@ -46,11 +49,21 @@ export const sendEmail = async ({to, subject,templateName,templateData,attachmen
             }))
         })
 
+        console.log("SMTP Config:", {
+            host: envVars.NODEMAILER.SMTP_HOST,
+            user: envVars.NODEMAILER.SMTP_USER,
+            port: envVars.NODEMAILER.SMTP_PORT,
+          });
+         
+
         console.log(`/uFE0F email sent ${to}: ${info.messageId} `);
+
+       
         
-    } catch (error) {
+    } catch (error:any) {
         console.log("error", error);
         
-        throw new AppError (401, "error in send email")
+        throw new AppError(500, error.message || "Error in send email");
     }
 }
+
