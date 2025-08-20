@@ -134,7 +134,7 @@ const forgotPassword =async (email: string)=>{
              }
          })
 
-         console.log("name,resetulr", forgotUILink)
+       
          
  
  }

@@ -36,7 +36,7 @@ export const sendEmail = async ({to, subject,templateName,templateData,attachmen
         const templatePath = path.join(__dirname, `templates/${templateName}.ejs`)
         const html = await ejs.renderFile(templatePath, templateData)
 
-        console.log("html path",html)
+     
 
        
 
@@ -52,11 +52,7 @@ export const sendEmail = async ({to, subject,templateName,templateData,attachmen
             }))
         })
 
-        console.log("SMTP Config:", {
-            host: envVars.NODEMAILER.SMTP_HOST,
-            user: envVars.NODEMAILER.SMTP_USER,
-            port: envVars.NODEMAILER.SMTP_PORT,
-          });
+    
          
 
         console.log(`/uFE0F email sent ${to}: ${info.messageId} `);
