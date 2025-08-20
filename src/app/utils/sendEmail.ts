@@ -8,16 +8,14 @@ import AppError from "../ErrorHelpers/AppError"
 
 
 const transporter = nodemailer.createTransport({
-    secure: false,
+
+    host: "smtp.gmail.com" ,
+    port: 465,
+    secure:true,
     auth: {
         user: envVars.NODEMAILER.SMTP_USER,
         pass: envVars.NODEMAILER.SMTP_PASS
-    },
-    port: Number(envVars.NODEMAILER.SMTP_PORT),
-    host: envVars.NODEMAILER.SMTP_HOST ,
-   
-    tls: { rejectUnauthorized: false }
-    
+    }
 
 })
 
@@ -37,8 +35,13 @@ export const sendEmail = async ({to, subject,templateName,templateData,attachmen
     try {
         const templatePath = path.join(__dirname, `templates/${templateName}.ejs`)
         const html = await ejs.renderFile(templatePath, templateData)
+
+        console.log("html path",html)
+
+       
+
         const info = await transporter.sendMail({
-            from: envVars.NODEMAILER.SMTP_FROM || envVars.NODEMAILER.SMTP_USER,
+            from: envVars.NODEMAILER.SMTP_FROM,
             to: to,
             subject: subject,
             html: html,
