@@ -54,7 +54,7 @@ const rideHistory = catchAsyncError(async(req: Request, res: Response)=>{
 
     const decodedToken = req.user
 
-    const rideHistory = await rideService.rideHistory(decodedToken as JwtPayload)
+    const rideHistory = await rideService.rideHistory(decodedToken as JwtPayload, req.query)
 
      
     sendResponse(res, {
@@ -65,6 +65,8 @@ const rideHistory = catchAsyncError(async(req: Request, res: Response)=>{
        
     })
 })
+
+
 // const rateDriver = catchAsyncError(async(req: Request, res: Response)=>{
 
 //   const rate = await rideService.rateDriver()
@@ -79,12 +81,25 @@ const rideHistory = catchAsyncError(async(req: Request, res: Response)=>{
 //     })
 // })
 
-
+const getRideDetails = catchAsyncError(async (req: Request, res: Response) => {
+    const rideId = req.params.id;
+    const decodedToken = req.user; // from auth middleware
+  
+    const ride = await rideService.getRideDetails(rideId, decodedToken);
+  
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Ride details retrieved successfully",
+      data: ride,
+    });
+  });
 
 export const rideController =
 {
     rideRequest,
      cancleRide, 
      getAllRide, 
-     rideHistory
+     rideHistory,
+     getRideDetails
 }

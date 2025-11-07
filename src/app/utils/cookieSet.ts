@@ -12,7 +12,8 @@ export const setCookies = (res: Response, tokenInfo: AuthToken)=>{
     if(tokenInfo.accessToken){
         res.cookie("access-token", tokenInfo.accessToken, {
             httpOnly: true,
-            secure: envVars.NODE_DEV !== "development",
+            // secure: envVars.NODE_DEV !== "development",
+            secure: true,
             sameSite: "none"
         })
     }
@@ -20,7 +21,8 @@ export const setCookies = (res: Response, tokenInfo: AuthToken)=>{
     if(tokenInfo.refreshToken){
         res.cookie("refreshToken", tokenInfo.refreshToken, {
             httpOnly: true, 
-            secure: envVars.NODE_DEV !== "development",
+            // secure: envVars.NODE_DEV !== "development",
+            secure: true,
             sameSite: "none"
         })
     }

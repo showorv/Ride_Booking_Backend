@@ -12,7 +12,7 @@ import { User } from "../modules/user/user.model";
 export const checkAuth = (...authRoles: string[])=>async(req:Request, res: Response, next: NextFunction)=>{
 
     try {
-        const accessToken = req.headers.authorization
+        const accessToken = req.headers.authorization || req.cookies["access-token"]
     if(!accessToken){
       throw new AppError(403,"access token undefined")
     }

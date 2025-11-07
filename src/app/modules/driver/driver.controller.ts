@@ -126,6 +126,8 @@ const setOnlineStatus = catchAsyncError(async(req: Request, res: Response)=>{
     })
 })
 const updateRideStatus= catchAsyncError(async(req: Request, res: Response)=>{
+    console.log("body",req.body);
+    
 
     const decodedToken = req.user
 
@@ -171,18 +173,71 @@ const viewEarnignHistory= catchAsyncError(async(req: Request, res: Response)=>{
     })
 })
 
-const driverRideHistory= catchAsyncError(async(req: Request, res: Response)=>{
+// const driverRideHistory= catchAsyncError(async(req: Request, res: Response)=>{
 
-    const decodedToken = req.user
+//     const decodedToken = req.user
 
-    const driverRide = await driverService.driverRideHistory(decodedToken as JwtPayload)
+//     const driverRide = await driverService.driverRideHistory(decodedToken as JwtPayload)
+
+     
+//     sendResponse(res, {
+//         statusCode: httpStatus.OK,
+//         success: true,
+//         message: "driver ride history retrived successfully",
+//         data: driverRide
+       
+//     })
+// })
+
+const getDriverRideHistory = catchAsyncError(async (req: Request, res: Response) => {
+    const decodedToken = req.user;
+    const { page, limit, fromDate, toDate } = req.query;
+  
+    const filters = {
+      page: page ? parseInt(page as string) : undefined,
+      limit: limit ? parseInt(limit as string) : undefined,
+      fromDate: fromDate as string,
+      toDate: toDate as string,
+    };
+  
+    const driverRide = await driverService.driverRideHistory(decodedToken as any, filters);
+  
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Driver ride history retrieved successfully",
+      data: driverRide,
+    });
+  });
+
+
+  
+const getDriverByUserId= catchAsyncError(async(req: Request, res: Response)=>{
+
+    const userId = req.params.userId;
+
+    const driver = await driverService.getDriverByUserId(userId);
 
      
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
         message: "driver ride history retrived successfully",
-        data: driverRide
+        data: driver
+       
+    })
+})
+const getActiveRideForDriver= catchAsyncError(async(req: Request, res: Response)=>{
+
+    const decodedToken = req.user; 
+    const ride = await driverService.getActiveRideForDriver(decodedToken);
+
+     
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "driver ride history retrived successfully",
+        data: ride
        
     })
 })
@@ -205,5 +260,7 @@ export const driverController =
     suspenseDriver,
     getAvaiblableRidesForDriver,
     cancledRideByDriver,
-    driverRideHistory
+    getDriverRideHistory,
+    getDriverByUserId,
+    getActiveRideForDriver
 }

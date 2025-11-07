@@ -29,13 +29,15 @@ driverController.getAvaiblableRidesForDriver)
 
 router.get("/ride-history", 
 checkAuth(Role.DRIVER),
-driverController.driverRideHistory)
+driverController.getDriverRideHistory)
 
 router.get("/earning-history", 
 checkAuth(Role.DRIVER),
 driverController.viewEarnignHistory)
 
+router.get("/active-ride", checkAuth(Role.DRIVER), driverController.getActiveRideForDriver);
 
+router.get("/user/:userId", checkAuth(...Object.values(Role)), driverController.getDriverByUserId);
 router.post("/approve/:driverId", 
 checkAuth(Role.ADMIN, Role.SUPERADMIN),
 driverController.approvedDriver)
@@ -45,7 +47,7 @@ driverController.suspenseDriver)
 
 router.post("/accepted/:rideId", checkAuth(Role.DRIVER), driverController.acceptedRide)
 router.post("/canceled/:rideId", checkAuth(Role.DRIVER), driverController.cancledRideByDriver)
-router.post("/updateStatus/:rideId", checkAuth(Role.DRIVER), driverController.updateRideStatus)
+router.patch("/updateStatus/:rideId", checkAuth(Role.DRIVER), driverController.updateRideStatus)
 
 
 

@@ -1,5 +1,5 @@
 import { JwtPayload } from "jsonwebtoken"
-import { activeStatus, iDriver } from "./driver.interface"
+import { RideHistoryFilters, activeStatus, iDriver } from "./driver.interface"
 import { User } from "../user/user.model"
 import AppError from "../../ErrorHelpers/AppError"
 import { Driver } from "./driver.model"
@@ -102,7 +102,15 @@ const allDriver = async()=>{
     }
 }
 
-
+const getDriverByUserId = async (userId: string) => {
+    const driver = await Driver.findOne({ user: userId });
+  
+    if (!driver) {
+      throw new AppError(401, "Driver not found");
+    }
+  
+    return driver;
+  };
 const acceptedRide = async(rideId: string, decodedToken: JwtPayload)=>{
 
 
@@ -327,6 +335,27 @@ const updateRideStatus = async(rideId: string,payload: iRide, decodedToken: JwtP
 
 }
 
+const getActiveRideForDriver = async (decodedToken: JwtPayload) => {
+    const driver = await Driver.findOne({ user: decodedToken.userId });
+  
+    if (!driver) {
+      throw new AppError(403, "Driver not found");
+    }
+  
+    if (!driver.currentRide) {
+      return null; // No active ride
+    }
+  
+    const ride = await Ride.findById(driver.currentRide)
+      .populate("driver", "name phone vehicleNumber") // optional
+      .select("pickupLocation dropLocation fare status timeStamps");
+  
+    if (!ride) {
+      throw new AppError(403, "Active ride not found");
+    }
+  
+    return ride;
+  };
 const getAvaiblableRidesForDriver = async(decodedToken: JwtPayload) =>{
 
     const driver = await Driver.findOne({user: decodedToken.userId})
@@ -362,26 +391,65 @@ const viewEarnignHistory = async(decodedToken: JwtPayload)=>{
 
 }
 
-const driverRideHistory = async(decodedToken: JwtPayload)=>{
+// const driverRideHistory = async(decodedToken: JwtPayload)=>{
 
-    const driver = await Driver.findOne({user: decodedToken.userId})
+//     const driver = await Driver.findOne({user: decodedToken.userId})
 
-    if(!driver){
-        throw new AppError(401,"You are not a driver")
-    }
+//     if(!driver){
+//         throw new AppError(401,"You are not a driver")
+//     }
 
-    const driverRide = await Ride.find(
-        {
-        driver: driver._id, 
-        status: rideStatus.COMPLETED
-    }).populate("rider", "name phone profile")
-     .sort({"timeStamps.completedAt": -1})
+//     const driverRide = await Ride.find(
+//         {
+//         driver: driver._id, 
+//         status: rideStatus.COMPLETED
+//     }).populate("rider", "name phone profile")
+//      .sort({"timeStamps.completedAt": -1})
 
-    return driverRide
+//     return driverRide
 
     
 
-}
+// }
+
+const driverRideHistory = async (decodedToken: JwtPayload, filters: RideHistoryFilters) => {
+    const driver = await Driver.findOne({ user: decodedToken.userId });
+    if (!driver) {
+      throw new AppError(401, "You are not a driver");
+    }
+  
+    const page = filters.page && filters.page > 0 ? filters.page : 1;
+    const limit = filters.limit && filters.limit > 0 ? filters.limit : 10;
+    const skip = (page - 1) * limit;
+  
+    const query: any = {
+      driver: driver._id,
+      status: rideStatus.COMPLETED,
+    };
+  
+
+    if (filters.fromDate || filters.toDate) {
+      query["timeStamps.completedAt"] = {};
+      if (filters.fromDate) query["timeStamps.completedAt"].$gte = new Date(filters.fromDate);
+      if (filters.toDate) query["timeStamps.completedAt"].$lte = new Date(filters.toDate);
+    }
+  
+
+    const totalRides = await Ride.countDocuments(query);
+  
+    const driverRides = await Ride.find(query)
+      .populate("rider", "name phone profile")
+      .sort({ "timeStamps.completedAt": -1 })
+      .skip(skip)
+      .limit(limit);
+  
+    return {
+      totalRides,
+      currentPage: page,
+      totalPages: Math.ceil(totalRides / limit),
+      rides: driverRides,
+    };
+  };
 
 export const driverService =
  {
@@ -395,5 +463,7 @@ export const driverService =
     suspenseDriver,
     getAvaiblableRidesForDriver,
     cancledRideByDriver,
-    driverRideHistory
+    driverRideHistory,
+    getDriverByUserId,
+    getActiveRideForDriver
 }
