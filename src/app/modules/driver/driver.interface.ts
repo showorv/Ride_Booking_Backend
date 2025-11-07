@@ -27,4 +27,5 @@ export interface RideHistoryFilters {
     limit?: number;
     fromDate?: string;
     toDate?: string;
+    search?: string
   }

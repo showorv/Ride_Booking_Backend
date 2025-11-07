@@ -90,17 +90,99 @@ const suspenseDriver = async(driverId: string, payload: Partial<iDriver>)=>{
 
 
 }
-const allDriver = async()=>{
+// const allDriver = async(query: any)=>{
 
-    const total = await Driver.countDocuments()
+//     const { page = 1, limit = 10, search = "", approved } = query;
 
-    const drivers = await Driver.find();
-    return  {
-        
-        data: drivers,
-        meta: total
+//     const filter: any = {};
+//     if (search) {
+//       filter.$or = [{ vehicleNumber: { $regex: search, $options: "i" } }];
+//     }
+//     if (approved !== undefined) filter.isApproved = approved === "true";
+
+//     const skip = (Number(page) - 1) * Number(limit);
+
+//     const [drivers, total] = await Promise.all([
+//       Driver.find(filter)
+//         .populate("user", "name email phone")
+//         .skip(skip)
+//         .limit(Number(limit))
+//         .sort({ createdAt: -1 }),
+//       Driver.countDocuments(filter),
+//     ]);
+
+//     return {
+//       data: drivers,
+//       meta: {
+//         total,
+//         page: Number(page),
+//         limit: Number(limit),
+//       },
+//     };
+// }
+
+const allDriver = async (query: any) => {
+    const { page = 1, limit = 10, search = "", approved } = query;
+  
+    const match: any = {};
+    if (approved !== undefined) {
+      match.isApproved = approved === "true";
     }
-}
+  
+    const skip = (Number(page) - 1) * Number(limit);
+  
+   
+    const pipeline: any[] = [
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+    ];
+  
+    if (search) {
+      pipeline.push({
+        $match: {
+          $or: [
+            { "user.name": { $regex: search, $options: "i" } },
+            { "user.email": { $regex: search, $options: "i" } },
+            { vehicleNumber: { $regex: search, $options: "i" } },
+          ],
+        },
+      });
+    }
+  
+    if (approved !== undefined) {
+      pipeline.push({ $match: { isApproved: approved === "true" } });
+    }
+  
+
+    const countPipeline = [...pipeline, { $count: "total" }];
+    const countResult = await Driver.aggregate(countPipeline);
+    const total = countResult[0]?.total || 0;
+  
+   
+    pipeline.push({ $sort: { createdAt: -1 } });
+    pipeline.push({ $skip: skip });
+    pipeline.push({ $limit: Number(limit) });
+  
+
+    const drivers = await Driver.aggregate(pipeline);
+  
+    return {
+      data: drivers,
+      meta: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+      },
+    };
+  };
+  
 
 const getDriverByUserId = async (userId: string) => {
     const driver = await Driver.findOne({ user: userId });
@@ -433,7 +515,17 @@ const driverRideHistory = async (decodedToken: JwtPayload, filters: RideHistoryF
       if (filters.fromDate) query["timeStamps.completedAt"].$gte = new Date(filters.fromDate);
       if (filters.toDate) query["timeStamps.completedAt"].$lte = new Date(filters.toDate);
     }
-  
+    if (filters.search) {
+        const riderMatch = await User.find({
+          $or: [
+            { name: { $regex: filters.search, $options: "i" } },
+            { phone: { $regex: filters.search, $options: "i" } },
+          ],
+        }).select("_id");
+    
+        const riderIds = riderMatch.map((r) => r._id);
+        query["rider"] = { $in: riderIds };
+      }
 
     const totalRides = await Ride.countDocuments(query);
   

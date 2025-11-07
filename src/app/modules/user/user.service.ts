@@ -35,20 +35,57 @@ const createUser =async (payload: Partial<iUser>)=>{
 
 }
 
-const getAllUser = async ()=>{
+const getAllUser = async (query: any)=>{
 
-    const allUser = await User.find();
+    const { page = 1, limit = 10, search = "", role } = query;
 
-    const totalUser = await User.countDocuments() 
+    const filter: any = {};
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    if (role) filter.role = role;
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const [users, total] = await Promise.all([
+      User.find(filter).skip(skip).limit(Number(limit)).sort({ createdAt: -1 }),
+      User.countDocuments(filter),
+    ]);
 
     return {
-        user: allUser,
-        meta: {
-            total:  totalUser
-        }
-    }
+      data: users,
+      meta: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+      },
+    };
 }
 
+const blockUser = async(userId: string)=>{
+    const user = await User.findById(userId);
+    if (!user) throw new AppError(404, "User not found");
+
+    user.isBlocked = true;
+    await user.save();
+
+    return user;
+}
+const unBlockUser = async(userId: string)=>{
+
+    const user = await User.findById(userId);
+    if (!user) throw new AppError(404, "User not found");
+
+    user.isBlocked = false;
+    await user.save();
+
+    return user;
+}
 const getSingleUser = async (userId: string)=>{
 
     const user = await User.findById(userId).select("-password");
@@ -126,5 +163,7 @@ export const userService =
     getAllUser,
     getSingleUser,
     updateUser,
-    getMe
+    getMe,
+    blockUser,
+    unBlockUser
 }

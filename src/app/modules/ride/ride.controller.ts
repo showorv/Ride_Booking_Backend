@@ -35,21 +35,16 @@ const cancleRide = catchAsyncError(async(req: Request, res: Response)=>{
        
     })
 })
-const getAllRide = catchAsyncError(async(req: Request, res: Response)=>{
-
-    const allRide = await rideService.getAllRide();
-     
+const getAllRide = async (req: Request, res: Response) => {
+    const rides = await rideService.getAllRide(req.query);
+  
     sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "all ride retrived successfully",
-        data: allRide.data,
-        metaData: {
-            total: allRide.meta
-        }
-       
-    })
-})
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Rides retrieved successfully",
+      data: rides,
+    });
+  };
 const rideHistory = catchAsyncError(async(req: Request, res: Response)=>{
 
     const decodedToken = req.user
@@ -95,11 +90,23 @@ const getRideDetails = catchAsyncError(async (req: Request, res: Response) => {
     });
   });
 
+  const getAdminAnalytics = async (req: Request, res: Response) => {
+    const data = await rideService.getAnalyticsData();
+  
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Analytics data retrieved successfully",
+      data,
+    });
+  };
+
 export const rideController =
 {
     rideRequest,
      cancleRide, 
      getAllRide, 
      rideHistory,
-     getRideDetails
+     getRideDetails,
+     getAdminAnalytics
 }

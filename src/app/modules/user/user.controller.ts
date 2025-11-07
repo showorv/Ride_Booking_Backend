@@ -27,18 +27,36 @@ const createUser = catchAsyncError (async( req: Request, res: Response)=>{
 
 const getAllUser = catchAsyncError (async( req: Request, res: Response)=>{
 
-    const users  = await userService.getAllUser() 
+    const result = await userService.getAllUser(req.query);
 
     sendResponse(res,{
         statusCode: httpStatus.CREATED,
         success: true,
         message:  "User retrived successfully",
-        data: users.user,
-        metaData: users.meta 
+        data: result.data,
+        metaData: result.meta 
 })
 
    
 })
+const blockUser = catchAsyncError(async (req: Request, res: Response) => {
+    const result = await userService.blockUser(req.params.userId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Rider blocked successfully",
+      data: result,
+    });
+  });
+  const unblockUser = catchAsyncError(async (req: Request, res: Response) => {
+    const result = await userService.unBlockUser(req.params.userId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Rider unblocked successfully",
+      data: result,
+    });
+  });
 
 const getSingleUser = catchAsyncError (async( req: Request, res: Response)=>{
 
@@ -101,5 +119,7 @@ export const userController =
     getAllUser, 
     getSingleUser,
     updateUser,
-    getMe
+    getMe,
+    blockUser,
+    unblockUser
 }

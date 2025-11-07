@@ -43,16 +43,14 @@ const suspenseDriver= catchAsyncError(async(req: Request, res: Response)=>{
 
 const allDriver= catchAsyncError(async(req: Request, res: Response)=>{
 
-    const drivers = await driverService.allDriver()
+    const result = await driverService.allDriver(req.query);
      
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
         message: "drivers retrived successfully",
-        data: drivers.data,
-        metaData:{
-            total: drivers.meta
-        }
+        data: result.data,
+        metaData: result.meta,
        
     })
 })
@@ -191,13 +189,14 @@ const viewEarnignHistory= catchAsyncError(async(req: Request, res: Response)=>{
 
 const getDriverRideHistory = catchAsyncError(async (req: Request, res: Response) => {
     const decodedToken = req.user;
-    const { page, limit, fromDate, toDate } = req.query;
+    const { page, limit, fromDate, toDate,search } = req.query;
   
     const filters = {
       page: page ? parseInt(page as string) : undefined,
       limit: limit ? parseInt(limit as string) : undefined,
       fromDate: fromDate as string,
       toDate: toDate as string,
+      search: search ? (search as string) : undefined, 
     };
   
     const driverRide = await driverService.driverRideHistory(decodedToken as any, filters);

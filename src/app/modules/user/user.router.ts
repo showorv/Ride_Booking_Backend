@@ -22,5 +22,6 @@ router.patch("/:id", checkAuth(...Object.values(Role)),
 multerUpload.single("file"),
 validateSchma(updateUserValidation),
 userController.updateUser)
-
+router.patch("/block/:userId", checkAuth(Role.ADMIN,Role.SUPERADMIN), userController.blockUser);
+router.patch("/unblock/:userId", checkAuth(Role.ADMIN, Role.SUPERADMIN), userController.unblockUser);
 export const userRoutes = router
