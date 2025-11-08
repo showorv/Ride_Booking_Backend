@@ -14,7 +14,8 @@ export const setCookies = (res: Response, tokenInfo: AuthToken)=>{
             httpOnly: true,
             // secure: envVars.NODE_DEV !== "development",
             secure: true,
-            sameSite: "none"
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000
         })
     }
 
@@ -23,7 +24,8 @@ export const setCookies = (res: Response, tokenInfo: AuthToken)=>{
             httpOnly: true, 
             // secure: envVars.NODE_DEV !== "development",
             secure: true,
-            sameSite: "none"
+            sameSite: "none",
+            maxAge: 30 * 24 * 60 * 60 * 1000
         })
     }
 }
