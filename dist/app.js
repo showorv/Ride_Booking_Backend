@@ -15,7 +15,7 @@ app.use(express_1.default.json());
 app.set("trust proxy", 1);
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cors_1.default)({
-    origin: ["https://ride-booking-frontend-showorv-showorvs-projects.vercel.app", 'http://localhost:5173'],
+    origin: ["https://ride-booking-frontend-pi.vercel.app", 'http://localhost:5173'],
     credentials: true
 }));
 app.use("/api/v1", routers_1.router);
