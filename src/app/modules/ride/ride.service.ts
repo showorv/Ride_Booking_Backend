@@ -72,7 +72,6 @@ const cancleRide = async(rideId: string, decodedToken: JwtPayload)=>{
     }
 
    
- 
 
     const cancleStatus = await Ride.findByIdAndUpdate(rideId,
         { 
@@ -85,6 +84,18 @@ const cancleRide = async(rideId: string, decodedToken: JwtPayload)=>{
     return cancleStatus
 
 }
+
+const getRiderRequestedRides = async (decodedToken: JwtPayload) => {
+  const riderId = decodedToken.userId;
+
+  const rides = await Ride.find({
+    rider: riderId,
+    status: "REQUESTED", // only requested rides
+  }).sort({ createdAt: -1 });
+
+  return rides;
+};
+
 // const getAllRide = async (query: any) => {
 
 //   const { page = 1, limit = 10, search = "", status, startDate, endDate } = query;
@@ -352,5 +363,6 @@ export const rideService =
      getAllRide, 
      rideHistory,
      getRideDetails,
-     getAnalyticsData
+     getAnalyticsData,
+     getRiderRequestedRides
 }

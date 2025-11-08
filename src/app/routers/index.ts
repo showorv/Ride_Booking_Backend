@@ -4,6 +4,7 @@ import { authRouter } from "../modules/auth/auth.router";
 import { rideRouter } from "../modules/ride/ride.router";
 import { driverRouter } from "../modules/driver/driver.router";
 import { otpRouter } from "../modules/otp/otp.router";
+import { contactRouter } from "../modules/contact/contact.route";
 
 export const router = Router()
 
@@ -31,6 +32,11 @@ const moduleRouters = [
     {
         path: "/otp",
         route:otpRouter
+
+    },
+    {
+        path: "/contact",
+        route: contactRouter
 
     },
 ] 

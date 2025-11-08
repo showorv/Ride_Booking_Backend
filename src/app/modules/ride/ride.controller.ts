@@ -35,6 +35,21 @@ const cancleRide = catchAsyncError(async(req: Request, res: Response)=>{
        
     })
 })
+const getRiderRequestedRides = catchAsyncError(async(req: Request, res: Response)=>{
+
+   
+    const decodedToken = req.user
+
+    const ride = await rideService.getRiderRequestedRides( decodedToken as JwtPayload)
+     
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "ride request get successfully",
+        data: ride
+       
+    })
+})
 const getAllRide = async (req: Request, res: Response) => {
     const rides = await rideService.getAllRide(req.query);
   
@@ -108,5 +123,5 @@ export const rideController =
      getAllRide, 
      rideHistory,
      getRideDetails,
-     getAdminAnalytics
+     getAdminAnalytics,getRiderRequestedRides
 }

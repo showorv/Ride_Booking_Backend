@@ -10,6 +10,7 @@ const router = Router()
 
 router.post("/requested", checkAuth(Role.RIDER),validateSchma(requestRideValidationSchema), rideController.rideRequest)
 router.get("/getAll", checkAuth(Role.ADMIN, Role.SUPERADMIN), rideController.getAllRide)
+router.get("/request", checkAuth(Role.RIDER), rideController.getRiderRequestedRides)
 router.get("/ride-history", checkAuth(Role.RIDER), rideController.rideHistory)
 router.get("/analytics", checkAuth(Role.ADMIN,Role.SUPERADMIN), rideController.getAdminAnalytics)
 router.get("/rideDetails/:id", rideController.getRideDetails);

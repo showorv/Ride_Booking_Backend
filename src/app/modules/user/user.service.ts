@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs"
 import { envVars } from "../../config/envVars"
 import { JwtPayload } from "jsonwebtoken"
 import { cloudinaryDeleteUpload } from "../../config/cloudinary.config"
+import { Driver } from "../driver/driver.model"
 
 const createUser =async (payload: Partial<iUser>)=>{
 
@@ -143,16 +144,20 @@ const updateUser = async(userId: string, payload: Partial<iUser>, decodeToken: J
 
 }
 
-const getMe = async(userId: string)=>{
-
-    const user = await User.findById(userId).select("-password")
-
-    return user;
-
-
-
-   
-}
+const getMe = async (userId: string) => {
+    const user = await User.findById(userId).select("-password");
+    if (!user) return null;
+  
+    let driver = null;
+    if (user.role === "DRIVER") {
+      driver = await Driver.findOne({ user: user._id }).select("isApproved isSuspend");
+    }
+  
+    return {
+      user,
+      driver,
+    };
+  };
 
 
 
